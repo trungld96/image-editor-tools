@@ -13,7 +13,9 @@ import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 
 import { createStore } from "polotno/model/store";
+import { unstable_setAnimationsEnabled } from 'polotno/config';
 
+unstable_setAnimationsEnabled(true);
 import tJson from "../src/assets/json/template.json";
 
 import tJson2 from "../src/assets/json/template2.json";
@@ -32,13 +34,14 @@ const ActionControls = ({ store }) => {
       <DownloadButton store={store} />
       <Button
         intent="primary"
-        onClick={() => {
+        onClick={async () => {
           console.log("save");
           if (isDownloading) return;
           setIsDownloading(true);
           const json = store.toJSON();
-
-          console.log("save", json);
+          // const down = await store.saveAsGIF();
+          // console.log("save", json, down);
+          // setIsDownloading(false);
           const jsonTemplate = JSON.stringify(json);
           const blob = new Blob([jsonTemplate], { type: "application/json" });
 
@@ -55,6 +58,32 @@ const ActionControls = ({ store }) => {
       >
         Save
       </Button>
+      <Button
+        intent="primary"
+        onClick={async () => {
+          console.log("save");
+          if (isDownloading) return;
+          setIsDownloading(true);
+          const json = store.toJSON();
+          const down = await store.saveAsGIF();
+          // setIsDownloading(false);
+          console.log("save", json, down);
+          // const jsonTemplate = JSON.stringify(json);
+          // const blob = new Blob([jsonTemplate], { type: "application/json" });
+
+          // // Create a download link
+          // const downloadLink = document.createElement("a");
+          // downloadLink.href = URL.createObjectURL(blob);
+          // downloadLink.download = "template.json";
+          // // Trigger the download
+          // downloadLink.click();
+          setTimeout(() => {
+            setIsDownloading(false);
+          }, 1000);
+        }}
+      >
+        Download Gif
+      </Button>
     </div>
   );
 };
@@ -70,6 +99,8 @@ const CustomToolbar = ({ store }) => {
   );
 };
 const page = store.addPage();
+
+console.log('activeee', page.active);
 
 const sections = [...DEFAULT_SECTIONS, CustomUploadJson];
 
